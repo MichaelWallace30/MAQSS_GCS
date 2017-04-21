@@ -3,12 +3,7 @@ QT += qml gui quick positioning location
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    ../../NGCP/xbeeplus/lib/ReceivePacket.cpp \
-    ../../NGCP/xbeeplus/lib/SerialXbee.cpp \
-#    ../../NGCP/xbeeplus/lib/TransmitRequest.cpp \
-#    ../../NGCP/xbeeplus/lib/Utility.cpp \
     XbeeInterface.cpp
-    #../../NGCP/xbeeplus/test/main.cpp
 
 RESOURCES += qml.qrc \
     images/marker.png \
@@ -18,7 +13,7 @@ RESOURCES += qml.qrc \
 LIBS += \
     -lboost_system\
     -lboost_thread\
-    -lxbee_plus
+
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -33,17 +28,25 @@ DISTFILES += \
     math.min.js
 
 HEADERS += \
-#    ../../NGCP/xbeeplus/include/Frame.hpp \
-    ../../NGCP/xbeeplus/include/ReceivePacket.hpp \
-    ../../NGCP/xbeeplus/include/SerialXbee.hpp \
-#    ../../NGCP/xbeeplus/include/TransmitRequest.hpp \
-#    ../../NGCP/xbeeplus/include/Utility.hpp \
-#    ../../NGCP/xbeeplus/include/Xbee.hpp \
     XbeeInterface.hpp
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../xbeeplus/build/release/ -lxbee_plus
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../xbeeplus/build/debug/ -lxbee_plus
-else:unix: LIBS += -L$$PWD/../xbeeplus/build/ -lxbee_plus
+INCLUDEPATH += $$PWD/../CommProto-MessageStandards2017/packets/cpp
 
-INCLUDEPATH += $$PWD/../xbeeplus/build
-DEPENDPATH += $$PWD/../xbeeplus/build
+unix:!macx: LIBS += -L$$PWD/../CommProtocol/build/ -lCommProtocol-Static
+
+INCLUDEPATH += $$PWD/../CommProtocol/CommProto/include
+DEPENDPATH += $$PWD/../CommProtocol/CommProto/include
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../CommProtocol/build/libCommProtocol-Static.a
+
+unix:!macx: LIBS += -L$$PWD/../CommProtocol/build/libxbee3/ -llibxbee3
+
+INCLUDEPATH += $$PWD/../CommProtocol/libxbee3
+DEPENDPATH += $$PWD/../CommProtocol/libxbee3
+
+unix:!macx: LIBS += -L$$PWD/../CommProtocol/build/Encryption/cryptopp563/ -lcryptopp
+
+INCLUDEPATH += $$PWD/../CommProtocol/Encryption/cryptopp563
+DEPENDPATH += $$PWD/../CommProtocol/Encryption/cryptopp563
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../CommProtocol/build/Encryption/cryptopp563/libcryptopp.a
